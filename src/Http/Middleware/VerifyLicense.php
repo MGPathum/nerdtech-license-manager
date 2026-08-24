@@ -18,14 +18,13 @@ class VerifyLicense
      */
     public function handle(Request $request, Closure $next)
     {
-        $domain = $request->getHost();
-        $serverUrl = config('nerdtech-license.server_url');
+        $serverUrl = 'https://nerdtechlabs.info';
         
         $isValid = true;
 
         try {
-            $response = Http::post($serverUrl . '/api/verify-license', [
-                'domain' => $domain,
+            $response = Http::post($serverUrl . '/api/validate', [
+                'domain' => $request->getHost(),
             ]);
 
             if ($response->successful()) {
