@@ -23,8 +23,15 @@ class VerifyLicense
         $isValid = true;
 
         try {
+            Log::info('Nerdtech License Manager: Verifying license for domain', ['domain' => $request->getHost()]);
+
             $response = Http::post($serverUrl . '/api/validate', [
                 'domain' => $request->getHost(),
+            ]);
+
+            Log::info('Nerdtech License Manager: Received response from license server', [
+                'status_code' => $response->status(),
+                'body' => $response->json() ?? $response->body()
             ]);
 
             if ($response->successful()) {
@@ -50,9 +57,11 @@ class VerifyLicense
         }
 
         if (!$isValid) {
+            Log::info('Nerdtech License Manager: Validation failed. Aborting request.');
             abort(403, 'License is invalid or deactivated. Please contact Nerdtech Labs.');
         }
 
+        Log::info('Nerdtech License Manager: Validation passed. Allowing request.');
         return $next($request);
     }
 }
