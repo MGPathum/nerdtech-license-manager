@@ -28,19 +28,29 @@ class VerifyLicense
             ]);
 
             if ($response->successful()) {
-                if ($response->json('valid') === false) {
+                $data = $response->json();
+                
+                if (isset($data['valid']) && $data['valid'] === false) {
                     $isValid = false;
                 }
+                
+                if (isset($data['status']) && strtolower($data['status']) === 'deactivated') {
+                    $isValid = false;
+                }
+            } else {
+                // If the server returns a 4xx or 5xx status (like 403 Forbidden or 400 Bad Request)
+                // that means the license validation actually failed, not a connection issue.
+                $isValid = false;
             }
         } catch (\Exception $e) {
-            // Try-catch fail-safe: allow access if the API throws a connection error.
+            // Try-catch fail-safe: allow access only if the API throws a connection error.
             Log::warning('Nerdtech License Manager: Could not reach license server.', [
                 'error' => $e->getMessage()
             ]);
         }
 
         if (!$isValid) {
-            abort(403, 'YOUR SOFTWARE LICENSE HAS EXPIRED. PLEASE CONTACT NERDTECH-LABS.');
+            abort(403, 'License is invalid or deactivated. Please contact Nerdtech Labs.');
         }
 
         return $next($request);

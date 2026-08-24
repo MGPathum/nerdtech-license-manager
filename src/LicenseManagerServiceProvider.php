@@ -23,10 +23,9 @@ class LicenseManagerServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
-     * @param \Illuminate\Routing\Router $router
      * @return void
      */
-    public function boot(Router $router)
+    public function boot()
     {
         // a. Publish the config file
         if ($this->app->runningInConsole()) {
@@ -35,7 +34,8 @@ class LicenseManagerServiceProvider extends ServiceProvider
             ], 'nerdtech-license-config');
         }
 
-        // b. Auto-inject the VerifyLicense middleware into the Laravel web middleware group
-        $router->pushMiddlewareToGroup('web', VerifyLicense::class);
+        // b. Auto-inject the VerifyLicense middleware globally
+        $kernel = $this->app->make(\Illuminate\Contracts\Http\Kernel::class);
+        $kernel->pushMiddleware(VerifyLicense::class);
     }
 }
