@@ -1,0 +1,23 @@
+{
+    "name": "nerdtech/license-manager",
+    "description": "Zero-Touch Domain-Based License checking system",
+    "type": "library",
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "*",
+        "illuminate/http": "*",
+        "illuminate/routing": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nerdtech\\LicenseManager\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Nerdtech\\LicenseManager\\LicenseManagerServiceProvider"
+            ]
+        }
+    }
+}
