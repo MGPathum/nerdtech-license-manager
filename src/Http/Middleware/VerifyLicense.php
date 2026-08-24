@@ -37,12 +37,15 @@ class VerifyLicense
             if ($response->successful()) {
                 $data = $response->json();
                 
-                if (isset($data['valid']) && $data['valid'] === false) {
-                    $isValid = false;
+                // We assume invalid by default if the API responds, and require explicit proof of validity
+                $isValid = false;
+                
+                if (isset($data['valid']) && $data['valid'] === true) {
+                    $isValid = true;
                 }
                 
-                if (isset($data['status']) && strtolower($data['status']) === 'deactivated') {
-                    $isValid = false;
+                if (isset($data['status']) && strtolower($data['status']) === 'active') {
+                    $isValid = true;
                 }
             } else {
                 // If the server returns a 4xx or 5xx status (like 403 Forbidden or 400 Bad Request)
