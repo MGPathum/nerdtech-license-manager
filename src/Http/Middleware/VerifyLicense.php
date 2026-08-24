@@ -25,7 +25,7 @@ class VerifyLicense
         try {
             Log::info('Nerdtech License Manager: Verifying license for domain', ['domain' => $request->getHost()]);
 
-            $response = Http::post($serverUrl . '/api/validate', [
+            $response = Http::withoutVerifying()->post($serverUrl . '/api/validate', [
                 'domain' => $request->getHost(),
             ]);
 
